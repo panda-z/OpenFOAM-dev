@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -54,8 +54,7 @@ SourceFiles
 #define kOmegaSSTDES_H
 
 #include "kOmegaSSTBase.H"
-#include "LESModel.H"
-#include "LESeddyViscosity.H"
+#include "DESModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -73,7 +72,7 @@ class kOmegaSSTDES
 :
     public Foam::kOmegaSST
     <
-        LESeddyViscosity<BasicTurbulenceModel>,
+        DESModel<BasicTurbulenceModel>,
         BasicTurbulenceModel
     >
 {
@@ -152,6 +151,9 @@ public:
 
         //- Read model coefficients if they have changed
         virtual bool read();
+
+        //- Return the LES field indicator
+        virtual tmp<volScalarField> LESRegion() const;
 };
 
 

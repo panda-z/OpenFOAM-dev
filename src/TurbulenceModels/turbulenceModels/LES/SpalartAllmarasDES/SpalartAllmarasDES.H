@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -44,7 +44,7 @@ SourceFiles
 #ifndef SpalartAllmarasDES_H
 #define SpalartAllmarasDES_H
 
-#include "LESeddyViscosity.H"
+#include "DESModel.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -60,7 +60,7 @@ namespace LESModels
 template<class BasicTurbulenceModel>
 class SpalartAllmarasDES
 :
-    public LESeddyViscosity<BasicTurbulenceModel>
+    public DESModel<BasicTurbulenceModel>
 {
     // Private Member Functions
 

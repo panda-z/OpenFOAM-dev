@@ -54,6 +54,7 @@ turbulenceIntensity/turbulenceIntensity.C
 wallShearStress/wallShearStress.C
 wallHeatFlux/wallHeatFlux.C
 wallHeatTransferCoeff/wallHeatTransferCoeff.C
+DESModelRegions/DESModelRegions.C
 
 writeCellCentres/writeCellCentres.C
 writeCellVolumes/writeCellVolumes.C

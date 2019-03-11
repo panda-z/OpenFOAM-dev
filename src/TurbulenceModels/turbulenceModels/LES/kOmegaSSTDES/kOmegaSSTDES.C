@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2016-2018 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2016-2019 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -93,7 +93,7 @@ kOmegaSSTDES<BasicTurbulenceModel>::kOmegaSSTDES
 :
     kOmegaSST
     <
-        LESeddyViscosity<BasicTurbulenceModel>,
+        DESModel<BasicTurbulenceModel>,
         BasicTurbulenceModel
     >
     (
@@ -132,8 +132,7 @@ bool kOmegaSSTDES<BasicTurbulenceModel>::read()
 {
     if
     (
-        kOmegaSST<LESeddyViscosity<BasicTurbulenceModel>, BasicTurbulenceModel>
-        ::read()
+        kOmegaSST<DESModel<BasicTurbulenceModel>, BasicTurbulenceModel>::read()
     )
     {
         CDES_.readIfPresent(this->coeffDict());
@@ -145,6 +144,58 @@ bool kOmegaSSTDES<BasicTurbulenceModel>::read()
     {
         return false;
     }
+}
+
+
+template<class BasicTurbulenceModel>
+tmp<volScalarField> kOmegaSSTDES<BasicTurbulenceModel>::LESRegion() const
+{
+    const volScalarField& k = this->k_;
+    const volScalarField& omega = this->omega_;
+
+    const volScalarField CDkOmega
+    (
+        (2*this->alphaOmega2_)*(fvc::grad(k) & fvc::grad(omega))/omega
+    );
+
+    const volScalarField F1(this->F1(CDkOmega));
+    const volScalarField F23(this->F23());
+
+    const volScalarField::Internal FDES(this->FDES(F1, F23));
+
+    /*
+    tmp<volScalarField> tLESRegion
+    (
+        new volScalarField
+        (
+            IOobject
+            (
+                "DES::LESRegion",
+                this->runTime_.timeName(),
+                this->mesh_,
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            pos(FDES - 1),
+            k.boundaryField()
+        )
+    );
+    */
+    tmp<volScalarField> tLESRegion
+    (
+        volScalarField::New
+        (
+            type(),
+            this->mesh_,
+            dimensionedScalar(dimless, 0)
+        )
+    );
+
+    volScalarField::Internal& LESRegioni = tLESRegion.ref().ref();
+
+    LESRegioni = pos(FDES - 1);
+
+    return tLESRegion;
 }
 
 
